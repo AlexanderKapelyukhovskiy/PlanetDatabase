@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v2.0.0.js"></script>
+        <script src="http://builds.emberjs.com/tags/v1.9.0/ember.js"></script>
+        <title>PlanetDatabase.com Demo</title>
+        <style>
+            #description {
+                margin-top: 150px
+            }
+            table tr{
+                height: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" id="planets-app">
+        </div>
+
+        <script type="text/x-handlebars" data-template-name="application">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <h1> PlanetDatabase.com </h1>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6" id="description">
+                            <h4>
+                                Welcome to PlanetDatabase.com
+                            </h4>
+                            <h4>
+                                Please see the list of planets in<br>
+                                our solar system on the right<br>
+                                hand side.<br>
+                            </h4>
+                        </div>
+                        <div class="col-md-3">
+                            <table>
+                                {{outlet}}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="index">
+            {{#each planet in model}}
+            <tr>
+                <td>
+                    <b><a href="#" {{action 'showDetails' planet.id }}>{{planet.name}}</a></b>
+                    {{#if planet.selected}}
+                    <br>
+                    {{planet.distance}} km from Sun
+                    {{/if}}
+                </td>
+            </tr>
+            {{/each}}
+        </script>
+
+    </body>
+</html>
+
+<script>
+    window.Planets = Ember.Application.create({
+        rootElement: "#planets-app",
+    });
+
+    Planets.IndexRoute = Ember.Route.extend({
+        model: function () {
+            return Ember.$.getJSON("api/planets/");
+        }
+    });
+
+    Planets.IndexController = Ember.ArrayController.extend({
+        actions: {
+            showDetails: function (id) {
+                var model = this.get('model');
+                model.forEach(function (entry) {
+                    if (entry.id == id) {
+                        if (entry.distance) {
+                            Ember.set(entry, "selected", true);
+                        } else {
+                            Ember.$.getJSON("api/planets/" + id).then(function(planet) {
+                                Ember.set(entry, "distance", planet.distance.toLocaleString('en'));
+                                Ember.set(entry, "selected", true);
+                            });
+                        }
+                    } else {
+                        Ember.set(entry, "selected", false);
+                    }
+                });
+            }
+        }
+    });
+</script>

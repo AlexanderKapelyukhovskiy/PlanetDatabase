@@ -1,2 +1,3 @@
 # Planet Database
-Simple Demo project (API + Ember.js)
+Simple Demo project (EntityFramework + Autofac + WebApi + Ember.js + NUnit + Moq)
+

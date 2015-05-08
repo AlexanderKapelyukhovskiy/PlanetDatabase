@@ -4,7 +4,7 @@ Simple Demo project (EntityFramework + Autofac + WebApi + Ember.js + NUnit + Moq
 To make demo work you need set up correct connection string in PlanetDatabase\PlanetDatabase.Web\Web.config
 Currently it is:
 
-```
+```xml
 <connectionStrings>
       <add name="Default"
          connectionString="Server=localhost\sqlexpress;Database=PlanetDatabase;Persist Security Info=True;integrated security=true;"
